@@ -77,10 +77,10 @@ export default {
           localStorage.setItem('weatherInfo', JSON.stringify(res.data));
         })
         .catch(err => {
-            if (err.response && err.response.status === 404) {
-                error = "Такого города нет";
-                weather = null;
-                return;
+          if (err.response && err.response.status === 404) {
+            error = "Такого города нет";
+            weather = null;
+            return;
             } 
             error = "Произошла ошибĸа. Попробуйте снова.";
             weather = null
