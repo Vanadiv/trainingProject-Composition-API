@@ -1,3 +1,21 @@
+<template>
+<div v-if="props.temp" class="temp-info">
+    <div class = "btn-change"> 
+        <button class="btn-temp" @click="buttonEventName"> {{ buttonName }} </button>
+        <router-link to="/info"> 
+        <button class="btn-temp" > Дополнительная информация </button>
+        </router-link>
+    </div>
+
+    <div> 
+        <h2> {{ showTemp }} </h2>
+        <h2> {{ showFeelsLike }} </h2>
+        <h2> {{ showMinTemp }} </h2>
+        <h2> {{ showMaxTemp }} </h2>
+    </div>
+</div> 
+</template>
+
 <script setup>
 import { computed } from 'vue';
 
@@ -6,11 +24,11 @@ const props = defineProps ({
         type: Object,
         required: true 
     },
-    get_data:{
+    getWeatherInfo:{
         type: Function,
         required: true 
     },
-    getFtemp: {
+    getFTemp: {
         type: Function,
         required: true 
     },
@@ -20,36 +38,28 @@ const props = defineProps ({
     }
 })
 
-const showTemp = computed(()  => { return "Температура: " + props.temp.main.temp })
-const showFeelsLike = computed(() => { return "Ощущается как: " + props.temp.main.feels_like })
-const showMinTemp = computed(() => { return "Минимальная температура: " + props.temp.main.temp_min })
-const showMaxTemp = computed(() => { return "Максимальная температура: " + props.temp.main.temp_max })
-
+const showTemp = computed(()  => { 
+    return "Температура: " + props.temp.main.temp 
+})
+const showFeelsLike = computed(() => { 
+    return "Ощущается как: " + props.temp.main.feels_like 
+})
+const showMinTemp = computed(() => { 
+    return "Минимальная температура: " + props.temp.main.temp_min 
+})
+const showMaxTemp = computed(() => { 
+    return "Максимальная температура: " + props.temp.main.temp_max 
+})
+const buttonName = computed(() => { 
+    return props.isButtonOneActive ? "Перевести в °F" : "Перевести в °C" 
+})
+const buttonEventName = () => { 
+    props.isButtonOneActive ? props.getFTemp() : props.getWeatherInfo() 
+}
 </script>
 
-<template>
-<div v-if = "props.temp" class = "infoTemp">
-    <div class = "changeBtn"> 
-        <button class = "btnTemp" @click = "getFtemp" v-if = "isButtonOneActive"> Перевести в °F </button> 
-        <button class = "btnTemp" @click = "get_data" v-if = "!isButtonOneActive"> Перевести в °C </button>
-        <router-link to = "/info"> 
-        <button class = "btnTemp" > Дополнительная информация </button>
-        </router-link>
-    </div>
-
-    <div> 
-        <h2> {{ showTemp }}</h2>
-        <h2> {{ showFeelsLike }}</h2>
-        <h2> {{ showMinTemp }}</h2>
-        <h2> {{ showMaxTemp }}</h2>
-    </div>
-</div>
-
-    
-</template>
-
 <style scoped>
-.infoTemp {
+.temp-info {
     grid-area: content1; 
     display: grid;
     box-shadow: 0px 2px 40px #00000014;
@@ -61,8 +71,7 @@ const showMaxTemp = computed(() => { return "Максимальная темпе
     padding: 30px;
     margin-left: 50px;
 }
-
-.btnTemp {
+.btn-temp {
     border-radius: 10px;
     border: 2px solid #0d0b87;
     padding: 10px 15px;
@@ -72,8 +81,7 @@ const showMaxTemp = computed(() => { return "Максимальная темпе
     color: #fff;
     transform: none !important;
 }
-
-.changeBtn {
+.btn-change {
     position: absolute;
 }
 </style>

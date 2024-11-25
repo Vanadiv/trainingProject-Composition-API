@@ -1,3 +1,14 @@
+<template>
+<div v-if="props.weather != null" class="conditions-info" :style="showImage">
+    <div class="center-header"> 
+        <h2> Осадки </h2>
+    </div>
+    <div class="center-text">
+        <h2> {{ showConditions }} </h2>
+    </div>
+</div> 
+</template>
+
 <script setup>
 import { computed } from 'vue';
 
@@ -9,40 +20,28 @@ const props = defineProps ({
 })
 
 const showConditions = computed(() => {
-    if(props.weather.rain == null && props.weather.snow == null) {
-        return "Осадков нет"
-    } else if(props.weather.rain == null) {
+    if(props.weather.rain != null) {
+        return `Дождь - в среднем ${props.weather.rain?.['1h']} см дождя за 1 час`
+    } 
+    if(props.weather.snow != null) {
         return `Снег - в среднем ${props.weather.snow?.['1h']} см снега за 1 час`
-    } else {
-        return `Дождь - в среднем ${props.weather.rain?.['1h']} см дождя за 1 час` 
-    }
+    } 
+    return "Осадков нет"
 })
+
 const showImage = computed(() => {           
-    if(props.weather.rain == null && props.weather.snow == null) {
-        return 'background:none;'
-    } else if(props.weather.rain == null) {
-        return  'background: url(src/assets/snow.png);';
-    } else {
-        return 'background: url(src/assets/rain.jpg); color: #fff; font-weight: 800';
+    if(props.weather.rain != null) {
+        return 'background: url(src/assets/rain.jpg); color: #fff; font-weight: 800'
     }
+    if(props.weather.snow != null) {
+        return  'background: url(src/assets/snow.png);';
+    }
+    return 'background:none;'
 })
-
-
 </script>
 
-<template>
-<div v-if = "props.weather" class="infoConditions" :style = "showImage">
-    <div class = "centerHeader"> 
-        <h2> Осадки </h2>
-    </div>
-    <div class = "centerText">
-        <h2> {{ showConditions }} </h2>
-    </div>
-</div> 
-</template>
-
 <style scoped>
-.infoConditions {
+.conditions-info {
     display: grid;
     grid-area: content4; 
     box-shadow: 0px 2px 40px #00000014;
@@ -54,7 +53,7 @@ const showImage = computed(() => {
     gap: 15px;
     margin-right: 50px;
 }
-.centerText {
+.center-text {
     grid-area: text;
     display: flex;
     flex-direction: column;
@@ -62,8 +61,7 @@ const showImage = computed(() => {
     justify-content: center;
     height: 100%;
 }
-.centerHeader {
+.center-header {
     grid-area: header;
 }
-
 </style>

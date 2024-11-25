@@ -1,3 +1,27 @@
+<template>
+<div class="wrap"> 
+    <div class="city-input">  
+      <h1> Погодное приложение</h1>
+      <input type="text" v-model="city" placeholder="Введите название города" @keydown.enter="checkInput">
+      <button :disabled="city ==''" @click="checkInput"> {{ buttonName }} </button>
+      <button v-if="weather != null" @click="clearWeatherInfo"> Сбросить данные </button>
+    </div>
+    <div class="city-name">
+      <template v-if="weather != null">
+          <img src="@/assets/map.svg" />
+          <h1> {{ showCityName }}</h1>
+      </template>
+      <p v-else> {{ error }}</p>
+    </div>
+  
+  <Temperature :temp="weather" :getWeatherInfo="getWeatherInfo" :getFTemp="getFTemp" :isButtonOneActive="isButtonOneActive" />
+  
+  <Sun :weather="weather" />
+  
+  <Condition :weather="weather"/>
+</div> 
+</template>
+
 <script>
 import axios from 'axios';
 import Temperature from '../components/Temperature.vue';
@@ -23,14 +47,14 @@ export default {
 
     onMounted(() => {
       const savedCity = localStorage.getItem('city');
-      if (savedCity) {
+      if (savedCity != null) {
         city.value = savedCity;
       }
-      const savedWeatherData = localStorage.getItem('weatherData');
-      const savedButtonState = localStorage.getItem('isButtonOneActive');
-      if (savedWeatherData) {
-        weather.value = JSON.parse(savedWeatherData);
+      const savedWeatherInfo = localStorage.getItem('weatherInfo');
+      if (savedWeatherInfo != null) {
+        weather.value = JSON.parse(savedWeatherInfo);
       }
+      const savedButtonState = localStorage.getItem('isButtonOneActive');
       if (savedButtonState !== null) {
         isButtonOneActive.value = JSON.parse(savedButtonState); 
       }
@@ -38,7 +62,7 @@ export default {
 
     const checkInput = () => {
       if (city.value.trim().length > 1 ) {
-        get_data();
+        getWeatherInfo();
         localStorage.setItem('city', city.value);
       } else  if (city.value.trim().length == 1) {
         error.value = "Введите более одного символа";
@@ -46,42 +70,46 @@ export default {
       }
     }
 
-    const get_data = () => {
+    const getWeatherInfo = () => {
       axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=ru&units=metric&appid=9bc72beca7fd1dafc25b81e5fb32b98e`)
         .then(res => {
           weather.value = res.data;
-          localStorage.setItem('weatherData', JSON.stringify(res.data));
+          localStorage.setItem('weatherInfo', JSON.stringify(res.data));
         })
         .catch(err => {
-          if (err.response && err.response.status === 404) {
-            error.value = "Такого города нет";
-            weather.value = null;
-          } else {
-            error.value = "Произошла ошибка. Попробуйте снова.";
-            weather.value = null;
-          }
+            if (err.response && err.response.status === 404) {
+                error = "Такого города нет";
+                weather = null;
+                return;
+            } 
+            error = "Произошла ошибĸа. Попробуйте снова.";
+            weather = null
         });
       isButtonOneActive.value = true;
       localStorage.setItem('isButtonOneActive', JSON.stringify(isButtonOneActive.value));
     };
 
-    const getFtemp = () => {
+    const getFTemp = () => {
       axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=ru&appid=9bc72beca7fd1dafc25b81e5fb32b98e`)
         .then(res => {
           weather.value = res.data;
-          localStorage.setItem('weatherData', JSON.stringify(res.data));
+          localStorage.setItem('weatherInfo', JSON.stringify(res.data));
         });
       isButtonOneActive.value = false;
       localStorage.setItem('isButtonOneActive', JSON.stringify(isButtonOneActive.value));
     };
     
     const showCityName = computed(() => {
-      return weather.value ? weather.value.name : '';
+      return weather.value ? weather.value.name : ''
     });
 
-    const clearWeatherData = () => {
+    const buttonName = computed(() => {
+      return city =='' ? 'Введите название' : 'Узнать погоду'
+    })
+
+    const clearWeatherInfo = () => {
       localStorage.removeItem('city');
-      localStorage.removeItem('weatherData');
+      localStorage.removeItem('weatherInfo');
       localStorage.removeItem('isButtonOneActive');
       weather.value = null;  
       error.value = "";  
@@ -98,44 +126,16 @@ export default {
       conditions,
       sunset,
       sunrise,
-      get_data,
-      getFtemp,
+      getWeatherInfo,
+      getFTemp,
       showCityName,
-      clearWeatherData,
-      checkInput
+      clearWeatherInfo,
+      checkInput,
+      buttonName
     };
   }
 };
-
 </script>
-
-<template>
-
-<div class = "wrap"> 
-    <div style = "grid-area: header;">  
-      <h1> Погодное приложение</h1>
-      <input type = "text" v-model = "city" placeholder="Введите название города" @keydown.enter="checkInput">
-      <button disabled v-if = "city == ''"> Введите название</button>
-      <button v-else @click = "checkInput"> Узнать погоду</button>
-      <button v-if="weather" @click="clearWeatherData"> Сбросить данные </button>
-    </div>
-
-    <div class = "infoCity">
-      <template v-if = "weather">
-          <img src = "@/assets/map.svg" />
-          <h1> {{ showCityName }}</h1>
-      </template>
-      <p v-else> {{ error }}</p>
-    </div>
-
-  <Temperature :temp = "weather" :get_data = "get_data" :getFtemp = "getFtemp" :isButtonOneActive = "isButtonOneActive" />
-
-  <Sun :weather = "weather" />
-
-  <Condition :weather = "weather"/>
-</div>
-
-</template>
 
 <style scoped>
 
@@ -151,7 +151,7 @@ export default {
     text-align: center;
     align-content: center;
 }
-.infoCity {
+.city-name {
     display: flex;
     grid-area: city;  
     align-items: center; 
@@ -192,5 +192,8 @@ button {
 }
 button:hover {
     transform: scale(1.1) translateY(-5px);
+}
+.city-input {
+    grid-area: header;
 }
 </style>

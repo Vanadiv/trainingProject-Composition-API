@@ -1,31 +1,14 @@
-<script>
+<template>
+<div class="wrap">     
+  <router-view></router-view>        
+</div> 
+</template>
 
-import Temperature from './components/Temperature.vue';
-import Sun from './components/Sun.vue';
-import Condition from './components/Condition.vue';
-
-export default {
-  components: {
-    Temperature,
-    Sun,
-    Condition
-  }
-  
-};
+<script setup>
 
 </script>
 
-<template>
-
-  <div class = "wrap">     
-    <router-view></router-view>        
-  </div>
-       
-</template>
-
 <style scoped>
-
-
 .wrap {
   display: grid;
   height: 70vh;
@@ -37,5 +20,4 @@ export default {
   padding: 50px 0;
   align-content: center;
 }
-
 </style>

@@ -1,15 +1,15 @@
-<script setup>
-
-</script>
-
 <template>
-    <div class = "wrap">
+    <div class="wrap">
         <h1> Дополнительная информация о погоде</h1>
         <router-link to="/">
             <button> Назад </button>
         </router-link>
     </div>
 </template>
+
+<script setup>
+
+</script>
 
 <style scoped>
 .wrap {
