@@ -28,7 +28,7 @@ const initMap = () => {
             map.value.remove();  
         }
     
-        map.value = L.map('map').setView([positionCity.value.lat, positionCity.value.lon], 13);
+        map.value = L.map('map', { attributionControl: false }).setView([positionCity.value.lat, positionCity.value.lon], 13);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
