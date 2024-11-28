@@ -70,6 +70,7 @@ const buttonEventName = () => {
     grid-row: span 2;
     padding: 30px;
     margin-left: 50px;
+    background: #FDF5E6;
 }
 .btn-temp {
     border-radius: 10px;
@@ -79,6 +80,7 @@ const buttonEventName = () => {
     cursor: pointer;
     background: #0d0b87;
     color: #fff;
+
     transform: none !important;
 }
 .btn-change {

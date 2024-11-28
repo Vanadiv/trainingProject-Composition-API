@@ -19,6 +19,8 @@
   <Sun :weather="weather" />
   
   <Condition :weather="weather"/>
+
+  <MapCity :weather="weather"/>
 </div> 
 </template>
 
@@ -27,13 +29,15 @@ import axios from 'axios';
 import Temperature from '../components/Temperature.vue';
 import Sun from '../components/Sun.vue';
 import Condition from '../components/Condition.vue';
+import MapCity from '../components/MapCity.vue';
 import { ref, computed, onMounted  } from 'vue';
 
 export default {
   components: {
     Temperature,
     Sun,
-    Condition
+    Condition,
+    MapCity
   },
   setup() {
     const city = ref("");
@@ -44,21 +48,41 @@ export default {
     const conditions = ref("");
     const sunset = ref("");
     const sunrise = ref("");
+    const positionUser = ref({lat: null, lon: null});
 
     onMounted(() => {
       const savedCity = localStorage.getItem('city');
       if (savedCity != null) {
         city.value = savedCity;
       }
+      const savedButtonState = localStorage.getItem('isButtonOneActive');
+      if (savedButtonState != null) {
+        isButtonOneActive.value = JSON.parse(savedButtonState); 
+      }
       const savedWeatherInfo = localStorage.getItem('weatherInfo');
       if (savedWeatherInfo != null) {
         weather.value = JSON.parse(savedWeatherInfo);
-      }
-      const savedButtonState = localStorage.getItem('isButtonOneActive');
-      if (savedButtonState !== null) {
-        isButtonOneActive.value = JSON.parse(savedButtonState); 
+      } else {
+        navigator.geolocation.getCurrentPosition((position) => {
+        positionUser.value.lat = position.coords.latitude;
+        positionUser.value.lon = position.coords.longitude;
+        getWeatherFromGeo();
+      }, (error) => {
+        error.value = 'Не удалось определить местоположение';
+      })
       }
     });
+
+    const getWeatherFromGeo = () => {
+        axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${positionUser.value.lat}&lon=${positionUser.value.lon}&lang=ru&units=metric&appid=9bc72beca7fd1dafc25b81e5fb32b98e`)
+        .then(res => {
+          weather.value = res.data;
+        })
+        .catch(() => {
+            error.value = "Произошла ошибĸа. Введите название города в поле поиска.";
+            weather.value = null
+        });
+      }
 
     const checkInput = () => {
       if (city.value.trim().length > 1 ) {
@@ -78,12 +102,12 @@ export default {
         })
         .catch(err => {
           if (err.response && err.response.status === 404) {
-            error = "Такого города нет";
-            weather = null;
+            error.value = "Такого города нет";
+            weather.value = null;
             return;
             } 
-            error = "Произошла ошибĸа. Попробуйте снова.";
-            weather = null
+            error.value = "Произошла ошибĸа. Попробуйте снова.";
+            weather.value = null
         });
       isButtonOneActive.value = true;
       localStorage.setItem('isButtonOneActive', JSON.stringify(isButtonOneActive.value));
@@ -104,7 +128,7 @@ export default {
     });
 
     const buttonName = computed(() => {
-      return city =='' ? 'Введите название' : 'Узнать погоду'
+      return city.value =='' ? 'Введите название' : 'Узнать погоду'
     })
 
     const clearWeatherInfo = () => {
@@ -131,7 +155,8 @@ export default {
       showCityName,
       clearWeatherInfo,
       checkInput,
-      buttonName
+      buttonName,
+      positionUser
     };
   }
 };
@@ -142,11 +167,11 @@ export default {
 .wrap {
     display: grid;
     gap: 30px 30px;
-    grid-template-areas: "header header" "city city" "content1 content2" "content3 content4";
-    grid-template-columns: 0.5fr 0.5fr;
+    grid-template-areas: "header header header" "city city city" "content1 content2 content5" "content3 content4 content5";
+    grid-template-columns: 0.7fr 0.6fr 1fr;
     grid-template-rows: auto auto 1fr 1fr;
     width: 100vw;
-    background: #FDF5E6;
+    /* background: #FDF5E6; */
     color: #292733;
     text-align: center;
     align-content: center;

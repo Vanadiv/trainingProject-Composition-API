@@ -13,7 +13,6 @@
   display: grid;
   height: 70vh;
   width: 100vw;
-  background: #FDF5E6;
   margin: 0;
   color: #292733;
   text-align: center;

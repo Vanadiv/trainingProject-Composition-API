@@ -20,23 +20,23 @@ const props = defineProps ({
 })
 
 const showConditions = computed(() => {
-    if(props.weather.rain != null) {
+    if(props.weather && props.weather.rain != null) {
         return `Дождь - в среднем ${props.weather.rain?.['1h']} см дождя за 1 час`
     } 
-    if(props.weather.snow != null) {
+    if(props.weather && props.weather.snow != null) {
         return `Снег - в среднем ${props.weather.snow?.['1h']} см снега за 1 час`
     } 
     return "Осадков нет"
 })
 
 const showImage = computed(() => {           
-    if(props.weather.rain != null) {
+    if(props.weather && props.weather.rain != null) {
         return 'background: url(src/assets/rain.jpg); color: #fff; font-weight: 800'
     }
-    if(props.weather.snow != null) {
+    if(props.weather && props.weather.snow != null) {
         return  'background: url(src/assets/snow.png);';
     }
-    return 'background:none;'
+    return 'background: #FDF5E6;'
 })
 </script>
 
@@ -51,7 +51,6 @@ const showImage = computed(() => {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
     gap: 15px;
-    margin-right: 50px;
 }
 .center-text {
     grid-area: text;

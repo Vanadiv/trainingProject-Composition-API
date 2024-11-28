@@ -46,7 +46,7 @@ const timeSunrise = computed(() => {
 
 <style scoped>
 .scale-img {
-    width: 40%; 
+    width: 60%; 
     height: auto;
 }
 .sun-info {
@@ -59,7 +59,7 @@ const timeSunrise = computed(() => {
     grid-template-columns: 1fr 0.5fr;
     grid-template-rows: auto 1fr;
     gap: 15px;
-    margin-right: 50px;
+    background: #FDF5E6;
 }
 .sun-img {
     grid-area: imgSun;
