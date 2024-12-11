@@ -1,23 +1,26 @@
 <template>
-<div v-if="props.temp" class="temp-info">
+<div v-if="props.temp != null" class="temp">
     <div class = "btn-change"> 
         <button class="btn-temp" @click="buttonEventName"> {{ buttonName }} </button>
         <router-link to="/info"> 
-        <button class="btn-temp" > Дополнительная информация </button>
+        <button class="btn-temp-info" > Дополнительная информация </button>
         </router-link>
     </div>
 
-    <div> 
+    <div class="temp-info"> 
         <h2> {{ showTemp }} </h2>
         <h2> {{ showFeelsLike }} </h2>
         <h2> {{ showMinTemp }} </h2>
         <h2> {{ showMaxTemp }} </h2>
     </div>
+
+    <ProgressBar :weather = "temp" :isButtonOneActive="isButtonOneActive"/>
 </div> 
 </template>
 
 <script setup>
 import { computed } from 'vue';
+import ProgressBar from './ProgressBar.vue';
 
 const props = defineProps ({
     temp: {
@@ -59,31 +62,51 @@ const buttonEventName = () => {
 </script>
 
 <style scoped>
-.temp-info {
+.temp {
     grid-area: content1; 
     display: grid;
+    grid-template-areas: "header header" "content1 content2";
+    grid-template-columns: 0.3fr 1fr;
+    grid-template-rows: auto 1fr;
     box-shadow: 0px 2px 40px #00000014;
-    align-content: center; 
-    justify-content: center;
     font-weight: 700;
+    font-size: 14px;
     border-radius: 10px;
     grid-row: span 2;
     padding: 30px;
     margin-left: 50px;
-    background: #FDF5E6;
+    background: rgba(255, 255, 255, 0.2);
+}
+.temp-info {
+    grid-area: content2;
+    align-content: center; 
+    justify-content: center;
 }
 .btn-temp {
     border-radius: 10px;
     border: 2px solid #0d0b87;
     padding: 10px 15px;
-    margin-left: 20px;
     cursor: pointer;
     background: #0d0b87;
     color: #fff;
-
     transform: none !important;
 }
+.btn-temp-info {
+    border-radius: 10px;
+    border: 2px solid #0d0b87;
+    padding: 10px 15px;
+    cursor: pointer;
+    background: #0d0b87;
+    color: #fff;
+    transform: none !important;
+    margin-left: 20px;
+}
 .btn-change {
-    position: absolute;
+    display: flex;
+    padding: 0;
+    grid-area: header;
+    grid-column-start: span 2;
+    margin: 0;
+    justify-content: start;
 }
 </style>

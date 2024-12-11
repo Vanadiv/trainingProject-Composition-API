@@ -114,7 +114,7 @@ export default {
     };
 
     const getFTemp = () => {
-      axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=ru&appid=9bc72beca7fd1dafc25b81e5fb32b98e`)
+      axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=ru&units=imperial&appid=9bc72beca7fd1dafc25b81e5fb32b98e`)
         .then(res => {
           weather.value = res.data;
           localStorage.setItem('weatherInfo', JSON.stringify(res.data));
@@ -168,10 +168,9 @@ export default {
     display: grid;
     gap: 30px 30px;
     grid-template-areas: "header header header" "city city city" "content1 content2 content5" "content3 content4 content5";
-    grid-template-columns: 0.7fr 0.6fr 1fr;
+    grid-template-columns: 0.8fr 0.6fr 0.7fr;
     grid-template-rows: auto auto 1fr 1fr;
     width: 100vw;
-    /* background: #FDF5E6; */
     color: #292733;
     text-align: center;
     align-content: center;

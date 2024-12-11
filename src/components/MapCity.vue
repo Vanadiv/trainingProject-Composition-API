@@ -19,7 +19,7 @@ const map = ref(null);
 const positionCity = ref({lat: null, lon: null});
 
 const initMap = () => {
-  if (props.weather && props.weather.coord) {
+  if (props.weather != null && props.weather.coord != null) {
     positionCity.value.lat = props.weather.coord.lat;
     positionCity.value.lon = props.weather.coord.lon;
 
@@ -56,10 +56,10 @@ watchEffect(() => {
 #map {
     width: 40vw;
     height: 100%;
-    margin-right: 50px;
     border-radius: 10px;
 }
 .wrap {
+    margin-right: 50px;
     grid-area: content5;
     grid-row: span 2;
 }
