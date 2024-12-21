@@ -34,18 +34,20 @@ const props = defineProps ({
 
 
 const timeSunset = computed(() => {
-        const sunset = new Date(props.weather.sys.sunset * 1000);
+        const sunset = new Date((props.weather.sys.sunset + props.weather.timezone) * 1000);
         return sunset.toLocaleString('ru-RU', {
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
+            timeZone: 'UTC'
         })
     })
 
 const timeSunrise = computed(() => {
-           const sunrise = new Date(props.weather.sys.sunrise * 1000);
+           const sunrise = new Date((props.weather.sys.sunrise + props.weather.timezone) * 1000);
            return sunrise.toLocaleString('ru-RU', {
                 hour: '2-digit',
-                minute: '2-digit'
+                minute: '2-digit',
+                timeZone: 'UTC'
             })
         })
 </script>

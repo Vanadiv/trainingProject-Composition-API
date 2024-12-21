@@ -13,10 +13,10 @@ const props = defineProps({
   },
 });
 
-const convertToHours = (time) => {
+const convertToHours = (time, timezone) => {
   if (time != null && !isNaN(time)) {
-    const date = new Date(time * 1000);
-    return date.getHours() + date.getMinutes() / 60;
+    const date = new Date((time + timezone) * 1000);
+    return date.getUTCHours() + date.getUTCMinutes() / 60;
   }
   console.log("InvalidDate", time)
   return 0
@@ -51,8 +51,8 @@ const initChart = () => {
 
   const myChart = echarts.init(chartDom);
 
-  const sunrise = convertToHours(props.weather.sys.sunrise);
-  const sunset = convertToHours(props.weather.sys.sunset);
+  const sunrise = convertToHours(props.weather.sys.sunrise, props.weather.timezone);
+  const sunset = convertToHours(props.weather.sys.sunset, props.weather.timezone);
 
   const option = {
     xAxis: {
